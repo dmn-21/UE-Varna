@@ -1,0 +1,349 @@
+#include <iostream>
+#include <exception>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class Taxi
+{
+public:
+	Taxi() {};
+
+	virtual void PrintInfo() = 0;
+	virtual double CalcTax() = 0;
+
+public:
+	string id;
+	string taxiDriver;
+	string countOfTaxiDrivers;
+};
+
+class TaxiBase : public Taxi
+{
+public:
+	virtual void PrintInfo()
+	{
+		cout << "Obligated person: " << taxiDriver << ", WorkId:" << id << ", Dispatching: " << CalcTax() << " lv." << endl;
+	};
+
+	virtual double CalcTax()
+	{
+		if (countOfTaxiDrivers == "1")
+			return dispatching;
+
+		else
+			return dispatching * 1.5;
+	};
+
+private:
+	const double dispatching = 60;
+};
+
+class TaxiGasoline : public TaxiBase
+{
+public:
+	TaxiGasoline(string _countOfTaxiDrivers, string _id, string _taxiDriver)
+	{
+		id = _id;
+		taxiDriver = _taxiDriver;
+		countOfTaxiDrivers = _countOfTaxiDrivers;
+	};
+
+	virtual double CalcTax()
+	{
+		if (countOfTaxiDrivers == "1")
+			return dispatching;
+
+		else
+			return dispatching * 1.5;
+	};
+
+private:
+	const double dispatching = 90;
+};
+
+class TaxiDiesel : public TaxiBase
+{
+public:
+	TaxiDiesel(string _countOfTaxiDrivers, string _id, string _taxiDriver)
+	{
+		id = _id;
+		taxiDriver = _taxiDriver;
+		countOfTaxiDrivers = _countOfTaxiDrivers;
+	};
+
+	virtual double CalcTax()
+	{
+		if (countOfTaxiDrivers == "1")
+			return dispatching;
+
+		else
+			return dispatching * 1.5;
+	};
+
+private:
+	const double dispatching = 100;
+};
+
+class TaxiElectric : public TaxiBase
+{
+public:
+	TaxiElectric(string _countOfTaxiDrivers, string _id, string _taxiDriver)
+	{
+		id = _id;
+		taxiDriver = _taxiDriver;
+		countOfTaxiDrivers = _countOfTaxiDrivers;
+	};
+
+	virtual double CalcTax()
+	{
+		if (countOfTaxiDrivers == "1")
+			return dispatching;
+
+		else
+			return dispatching * 1.5;
+	};
+
+private:
+	const double dispatching = 60;
+};
+
+class TaxiHybrid : public TaxiBase
+{
+public:
+	TaxiHybrid(string _countOfTaxiDrivers, string _id, string _taxiDriver)
+	{
+		id = _id;
+		taxiDriver = _taxiDriver;
+		countOfTaxiDrivers = _countOfTaxiDrivers;
+	};
+
+	virtual double CalcTax()
+	{
+		if (countOfTaxiDrivers == "1")
+			return dispatching;
+
+		else
+			return dispatching * 1.5;
+	};
+
+private:
+	const double dispatching = 70;
+};
+
+class Taxis
+{
+public:
+	Taxis() {};
+
+	void Add(Taxi* t)
+	{
+		taxis.push_back(t);
+	}
+
+	void List()
+	{
+		if (taxis.empty()) cout << "There are no obligated persons\n";
+		else
+		{
+			cout << "Awaiting payment are:\n";
+
+			for (int x = 0; x < taxis.size(); x++)
+			{
+				taxis[x]->PrintInfo();
+			}
+		}
+	}
+
+	void SaveChanges()
+	{
+		ofstream outFile("c:\\data\\oop.txt");
+		if (!outFile)
+		{
+			cout << "Error to open file\n";
+
+			return;
+		}
+
+		for (const auto& taxi : taxis)
+		{
+			outFile << "WorkId: " << taxi->id << ", Obligated person: " << taxi->taxiDriver
+				<< ", Count of taxi drivers: " << taxi->countOfTaxiDrivers
+				<< ", Dispatching: " << taxi->CalcTax() << " lv." << endl;
+		}
+
+		outFile.close();
+	}
+
+	double Process()
+	{
+		double tax = 0;
+
+		if (taxis.empty())
+		{
+			cout << "There are no obligated persons\n";
+
+			return -1;
+		}
+
+		tax = taxis[0]->CalcTax();
+
+		cout << "Paid:" << tax << endl;
+
+		ofstream outFile("c:\\data\\oop.txt");
+		if (!outFile)
+		{
+			cout << "Error to open file\n";
+
+			return -1;
+		}
+
+		for (size_t i = 1; i < taxis.size(); ++i)
+		{
+			outFile << "WorkId: " << taxis[i]->id << ", Obligated person: " << taxis[i]->taxiDriver
+				<< ", Count of taxi drivers: " << taxis[i]->countOfTaxiDrivers
+				<< ", Dispatching: " << taxis[i]->CalcTax() << " lv." << endl;
+		}
+
+		outFile.close();
+
+		taxis.erase(taxis.begin());
+
+		return tax;
+	}
+
+private:
+	vector<Taxi*> taxis;
+};
+
+class ExceptionMessages {
+public:
+	string const INVALID_ID = "Work Id must be between 1 to 1000!";
+	string const INVALID_COUNT_OF_TAXI_DRIVERS = "Count must be 1 or 2!";
+	string const INVALID_TAXI_DRIVER = "Name must be empty!";
+};
+ExceptionMessages exceptionMessages;
+
+string InputDataId(string id)
+{
+	while (true)
+	{
+		cout << "WorkId: "; cin >> id;
+		int intId = stoi(id);
+
+		try
+		{
+			if (intId >= 1 && intId <= 1000)
+			{
+				return id;
+			}
+			else 
+			{
+				throw (intId);
+			}
+		}
+		catch(int intId)
+		{
+			cout << exceptionMessages.INVALID_ID << endl;
+		}
+	}
+}
+
+string InputDataTaxiDriver(string taxiDriver)
+{
+
+	while (true)
+	{
+		cout << "Obligated person: "; getline(cin, taxiDriver);
+
+		try
+		{
+			if (!taxiDriver.empty())
+			{
+				return taxiDriver;
+			}
+			else
+			{
+				throw (taxiDriver);
+			}
+		}
+		catch (string taxiDriver)
+		{
+			cout << exceptionMessages.INVALID_TAXI_DRIVER << endl;
+		}
+	}
+}
+
+string InputDataCountOfTaxiDrivers(string countOfTaxiDrivers)
+{
+	while (true)
+	{
+		cout << "Count of taxi drivers: "; cin >> countOfTaxiDrivers;
+		int intCountOfTaxiDrivers = stoi(countOfTaxiDrivers);
+
+		try
+		{
+			if (intCountOfTaxiDrivers == 1 || intCountOfTaxiDrivers == 2)
+			{
+				return countOfTaxiDrivers;
+			}
+			else
+			{
+				throw (intCountOfTaxiDrivers);
+			}
+		}
+		catch (int intCountOfTaxiDrivers)
+		{
+			cout << exceptionMessages.INVALID_COUNT_OF_TAXI_DRIVERS << endl;
+		}
+	}
+}
+
+int main()
+{
+	Taxis taxis;
+
+	while (true)
+	{
+		cout << "\n\nMENU:\n==================================\n";
+
+		cout << "1. Add Benszine Taxi\n2. Add Diesel Taxi\n3. Add Electrical Taxi\n4. Add Hibrid Taxi\n5. Show All";
+
+		cout << "\n6. Process\n7. Save Changes\n0. Exit\nSelect: ";
+
+		string token; cin >> token; cin.ignore('\n', 10);
+
+		if (token == "0") break;
+
+		if (token == "5") taxis.List();
+
+		if (token == "6") taxis.Process();
+
+		if (token == "7") taxis.SaveChanges();
+
+		if (token == "1")
+		{
+			string id; string taxiDriver;  string countOfTaxiDrivers;
+			taxis.Add(new TaxiGasoline(InputDataCountOfTaxiDrivers(countOfTaxiDrivers), InputDataId(id), InputDataTaxiDriver(taxiDriver)));
+		}
+
+		if (token == "2")
+		{
+			string id; string taxiDriver; string countOfTaxiDrivers;
+			taxis.Add(new TaxiDiesel(InputDataCountOfTaxiDrivers(countOfTaxiDrivers), InputDataId(id), InputDataTaxiDriver(taxiDriver)));
+		}
+
+		if (token == "3")
+		{
+			string id; string taxiDriver; string countOfTaxiDrivers;
+			taxis.Add(new TaxiElectric(InputDataCountOfTaxiDrivers(countOfTaxiDrivers), InputDataId(id), InputDataTaxiDriver(taxiDriver)));
+		}
+
+		if (token == "4")
+		{
+			string id; string taxiDriver; string countOfTaxiDrivers;
+			taxis.Add(new TaxiHybrid(InputDataCountOfTaxiDrivers(countOfTaxiDrivers), InputDataId(id), InputDataTaxiDriver(taxiDriver)));
+		}
+	}
+}
