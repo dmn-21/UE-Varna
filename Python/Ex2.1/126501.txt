@@ -1,0 +1,55 @@
+# ЗАДАЧА 1
+oldest = ("", 0)
+last_age = 100
+
+with open('data.txt', 'r') as peoples_data:
+    for people in peoples_data:
+        curr_people = {}
+        name, age, id = people.split(';')
+        
+        curr_people['name'] = name
+        curr_people['age'] = age
+        curr_people['id'] = id
+
+        if int(age) < int(last_age):
+            last_age = age
+            oldest = (name, age)
+
+print(f"Най-младият клиент е {oldest[0]} на {oldest[1]} години.")
+
+# ЗАДАЧА 2
+sorted_people = {}
+index=1 
+
+with open('data.txt', 'r') as peoples_data:
+    for people in peoples_data:
+        curr_people = {}
+        name, age, id = people.split(';')
+        
+        curr_people['name'] = name
+        curr_people['age'] = age
+        curr_people['id'] = id
+
+        sorted_people[index] = curr_people
+        index+=1
+
+sorted_file_path = 'sorted_data.txt'
+sorted_people = dict(sorted(sorted_people.items(), key=lambda x: x[1]['name'], reverse=False))
+
+with open(sorted_file_path, 'w') as sorted_file:
+    for index, person in sorted_people.items():
+        line = f"{person['name']};{person['age']};{person['id']}"
+        sorted_file.write(line)
+		
+# ЗАДАЧА 3
+id = '0254796345'
+file_path = 'data.txt'
+
+with open(file_path, 'r') as file:
+    lines = file.readlines()
+
+with open(file_path, 'w') as file:
+    for line in lines:
+            _, _, id = line.strip().split(';')
+            if id != target_id:
+                file.write(line)

@@ -1,0 +1,4 @@
+aleks aleksandrova;22;000000000
+nikol aleksandrova;25;1234567894
+ivan ivanov;24;5252656847
+pavel petrov;12;0987678756
